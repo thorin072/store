@@ -26,6 +26,7 @@ namespace ShopOnTheCouch.Controllers
             Book book = db.Books.Find(id);
             if (book == null) return HttpNotFound();
             ViewBag.AuthorsList = db.Authors.ToList();
+
             return View(book);
         }
         //[HttpPost]

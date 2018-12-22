@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="~/Content/bootstrap.min.css" />
         <link rel="stylesheet" href="~/Scripts/jquery-3.3.1.min.js" />
         <link rel="stylesheet" href="~/Scripts/jquery-3.3.1.js" />
-        <link rel="stylesheet" href="~/css/Site.css" />
+        <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
     </environment>
     <environment names="Staging,Production">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.6/css/bootstrap.min.css"
@@ -44,11 +44,6 @@
             <p>&copy; @DateTime.Now.Year HOTBOOKS</p>
         </footer>
     </div>
-    <environment names="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
-    </environment>
     @RenderSection("scripts", required: false)
 </body>
 </html>
