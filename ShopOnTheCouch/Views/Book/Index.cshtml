@@ -1,0 +1,47 @@
+﻿@model IEnumerable<ShopOnTheCouch.Models.Book>
+
+<h4 class="text-center" >List of available books:</h4>
+<table class="table">
+    <tr>
+        <th>
+            Book
+        </th>
+        <th>
+            Number of pages
+        </th>
+        <th>
+            Quantity in stock
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <a class="font-weight-light" style="font-size:medium">@Html.DisplayFor(modelItem => item.Title)</a>
+                    <div>
+                        <a class="font-weight-light" style="font-style:italic">Authors: </a>
+                        @foreach (var auth in item.Author)
+                        {
+                            <a class="font-weight-light">@auth.FullName</a>
+                        }
+                    </div>
+</td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumPages)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.NumStock)
+            </td>
+            <td>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default">@Html.ActionLink("Edit", "Edit", new { id = item.Id })</button>
+                    <button type="button" class="btn btn-default">@Html.ActionLink("Delete", "Delete", new { id = item.Id })</button>
+                </div>
+            </td>
+        </tr>
+    }
+</table>
+<button type="submit" class="btn btn-default">@Html.ActionLink("Add", "AddBook")</button>
+

@@ -1,0 +1,151 @@
+﻿@model ShopOnTheCouch.Models.Book
+@{
+    int i = 1;
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <h4>Edit Book</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumPages, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NumPages, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NumPages, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumStock, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NumStock, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.NumStock, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group" id="authListId">
+            @foreach (var auth in Model.Author)
+            {<div class="form-group" id="authItemListId">
+                    @Html.LabelFor(model => model.Author, "Author " + @i.ToString(), htmlAttributes: new { @class = "control-label col-md-2" })
+                    @{i++;}
+                    <div class="dropdown">
+                        <input type="text" class="form-control" placeholder="??.." onkeyup="showHints()" id="searchStationInput" data-toggle="dropdown">
+                        <ul class="dropdown-menu" data-input="searchStationInput"></ul>
+                    </div>
+                    @*<div class="dropdown col-md-10">
+                            <input class="form-control" name="authFullName" type="text" value="@auth.FullName" id="searchStationInput"  placeholder="Enter any author..." onkeyup="showHints()" data-toggle="dropdown" />
+                            <ul class="dropdown-menu" data-input="searchStationInput"></ul>
+                        </div>*@
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <a>Regulator of the number of authors of this book: </a>
+                <a class="btn btn-success btn-sm" style="color:black;" onclick="return addField()" href="#">[+]</a>
+                <a class="btn btn-danger btn-sm" style="color:black;" onclick="return deleteField(this)" href="#">[—]</a>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+
+<script>
+    var countOfFields = 1; // Текущее число полей
+    var curFieldNameId = 1; // Уникальное значение для атрибута name
+    var maxFieldLimit = 4; // Максимальное число возможных полей
+    var countAuthors = @(--i);
+    function deleteField(a) {
+        if (countOfFields > 1) {
+            // Получаем доступ к ДИВу, содержащему поле
+            var contDiv = a.parentNode;
+            // Удаляем этот ДИВ из DOM-дерева
+            contDiv.parentNode.removeChild(contDiv);
+            // Уменьшаем значение текущего числа полей
+            countOfFields--;
+            countAuthors--;
+        }
+        // Возвращаем false, чтобы не было перехода по сслыке
+        return false;
+    }
+    function addField() {
+        // Проверяем, не достигло ли число полей максимума
+        if (countOfFields >= maxFieldLimit) {
+            alert("Число полей достигло своего максимума = " + maxFieldLimit);
+            return false;
+        }
+        // Увеличиваем текущее значение числа полей
+        countOfFields++;
+        countAuthors++;
+        // Увеличиваем ID
+        curFieldNameId++;
+        // Создаем элемент ДИВ
+        var div = document.createElement("div");
+        // Добавляем HTML-контент с пом. свойства innerHTML
+        div.innerHTML = "<div class=\"form-group\" id=\"authItemListId\"><label class=\"control-label col-md-2\" for=\"Author\">Author " + countAuthors + "</label><div class=\"col-md-10\"><input class=\"form-control\" name=\"authFullName\" type=\"text\"/> </div>";
+        // Добавляем новый узел в конец списка полей
+        document.getElementById("authListId").appendChild(div);
+        // Возвращаем false, чтобы не было перехода по сслыке
+        return false;
+    }
+    var o = [
+        {
+            name: "Udine"
+        },
+        {
+            name: "Trieste"
+        },
+        {
+            name: "Gorizia"
+        },
+        {
+            name: "Gradisca"
+        },
+        {
+            name: "Gorgo"
+        },
+        {
+            name: "Pordenone"
+        },
+        {
+            name: "Uccea"
+        }
+    ]
+    var showHints = function () {
+        var str = $('#searchStationInput').val().toLowerCase();
+        $('.dropdown-menu').html("");
+        if (typeof str != "undefined" && str !== "") {
+
+            for (var el of o) {
+                var name = el.name.toLowerCase();
+                if (name.indexOf(str) !== -1) {
+                    $('.dropdown-menu').append('<li><a href="#">' + el.name + '</a></li>')
+                }
+            }
+            $('.dropdown').dropdown();
+        } else {
+            $('.dropdown-menu').append('<li><a href="#">write something..</a></li>')
+        }
+    }
+
+</script>
