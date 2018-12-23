@@ -1,7 +1,11 @@
-﻿@model ShopOnTheCouch.Models.Book
+﻿@using System.Web.Helpers;
+@using Newtonsoft.Json;
+@model ShopOnTheCouch.Models.Book
 @{
     int i = 1;
+    var json = @ViewBag.AuthorsList;
 }
+
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
@@ -10,6 +14,7 @@
         <h4>Add Book</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
         <div class="form-group">
             @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -35,13 +40,14 @@
         </div>
         <div class="form-group" id="authListId">
             <div class="form-group" id="authItemListId">
-                @Html.LabelFor(model => model.Author, "Author " + @i.ToString(), htmlAttributes: new { @class = "control-label col-md-2" })
-                @{i++;}
-                <div class="col-md-10">
-                    <input class="form-control" name="authFullName" type="text" />
-                </div>
-            </div>
+                    @Html.LabelFor(model => model.Author, "Author " + @i.ToString(), htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="dropdown col-md-10">
+                        <input type="text" class="form-control auth@(i)" name="authFullName" placeholder="Enter any author..." onclick="showHints()" onkeyup="showHints()" value="null" id="searchAuth@(i)" data-toggle="dropdown" />
+                        <ul class="dropdown-menu" id="@(i)"></ul>
+                    </div>
 
+                </div>
+            
         </div>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
@@ -61,44 +67,9 @@
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="~/Scripts/generating.item.author.js"></script>
+<script type="text/javascript" id="dropjs" data-countAuthorNow="@((i).ToString())" src="~/Scripts/dropwork.js"></script>
 
 
-<script>
-    var countOfFields = 1; // Текущее число полей
-    var curFieldNameId = 1; // Уникальное значение для атрибута name
-    var maxFieldLimit = 4; // Максимальное число возможных полей
-    var countAuthors = @(--i);
-    function deleteField(a) {
-        if (countOfFields > 1) {
-            // Получаем доступ к ДИВу, содержащему поле
-            var contDiv = a.parentNode;
-            // Удаляем этот ДИВ из DOM-дерева
-            contDiv.parentNode.removeChild(contDiv);
-            // Уменьшаем значение текущего числа полей
-            countOfFields--;
-            countAuthors--;
-        }
-        // Возвращаем false, чтобы не было перехода по сслыке
-        return false;
-    }
-    function addField() {
-        // Проверяем, не достигло ли число полей максимума
-        if (countOfFields >= maxFieldLimit) {
-            alert("Число полей достигло своего максимума = " + maxFieldLimit);
-            return false;
-        }
-        // Увеличиваем текущее значение числа полей
-        countOfFields++;
-        countAuthors++;
-        // Увеличиваем ID
-        curFieldNameId++;
-        // Создаем элемент ДИВ
-        var div = document.createElement("div");
-        // Добавляем HTML-контент с пом. свойства innerHTML
-        div.innerHTML = "<div class=\"form-group\" id=\"authItemListId\"><label class=\"control-label col-md-2\" for=\"Author\">Author " + countAuthors + "</label><div class=\"col-md-10\"><input class=\"form-control\" name=\"authFullName\" type=\"text\"/> </div>";
-        // Добавляем новый узел в конец списка полей
-        document.getElementById("authListId").appendChild(div);
-        // Возвращаем false, чтобы не было перехода по сслыке
-        return false;
-    }
-</script>
+

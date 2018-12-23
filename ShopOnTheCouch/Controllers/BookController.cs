@@ -16,10 +16,26 @@ namespace ShopOnTheCouch.Controllers
             return View(db.Books.ToList());
         }
 
+        [HttpPost]
+        public ActionResult AddBook(Book book, string[] authFullName)
+        {
+            StoreContext db = new StoreContext();
+            var newId = db.Books.OrderByDescending(x => x.Id).FirstOrDefault();
+            Book newbook = new Book { Id = newId.Id+1, Title = book.Title, NumPages = book.NumPages, NumStock = book.NumStock };
+            if (authFullName != null)
+            {
+                foreach (var newAuth in db.Authors.Where(i => authFullName.Contains(i.FullName)))
+                {
+                    newbook.Author.Add(newAuth);
+                }
+            }
+            db.Books.Add(newbook);
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
         public ActionResult AddBook()
         {
             return View();
-
         }
         public ActionResult Edit(int id=0)
         {
