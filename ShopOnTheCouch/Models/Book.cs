@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,6 +13,8 @@ namespace ShopOnTheCouch.Models
         public virtual ICollection<Author> Author { get; set; }
         public short NumPages { get; set; }
         public short NumStock { get; set; }
+
+        [JsonIgnore]
         public virtual ICollection<CheckoutHistory> CheckoutHistories { get; set; }
         //многие к многим по отношению к Check 
         // один к многим по отношению Auth

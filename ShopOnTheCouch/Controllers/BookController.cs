@@ -1,4 +1,5 @@
-﻿using ShopOnTheCouch.Models;
+﻿using Newtonsoft.Json;
+using ShopOnTheCouch.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,28 +26,33 @@ namespace ShopOnTheCouch.Controllers
             StoreContext db = new StoreContext();
             Book book = db.Books.Find(id);
             if (book == null) return HttpNotFound();
-            ViewBag.AuthorsList = db.Authors.ToList();
+  
+            ViewBag.AuthorsList = JsonConvert.SerializeObject(db.Authors);
+      
 
             return View(book);
         }
-        //[HttpPost]
-        //public ActionResult Edit(Book book,string[] authFullName)
-        //{
-        //    StoreContext db = new StoreContext();
-        //    Book newbook = db.Books.Find(book.Id);
-        //    newbook.Title = book.Title;
-        //    newbook.NumStock = book.NumStock;
-        //    newbook.NumPages = book.NumPages;
-        //    newbook.Author.Clear();
-        //    if (authFullName!=null)
-        //    {
-        //        foreach (var newAuth in db.)
-        //        {
-        //            newbook.Author.Add(newAuth);
-        //        }
-        //    }
-        //    return RedirectToAction("Index");
-        //}
+        [HttpPost]
+        public ActionResult Edit(Book book, string[] authFullName)
+        {
+            StoreContext db = new StoreContext();
+            Book newbook = db.Books.Find(book.Id);
+            newbook.Title = book.Title;
+            newbook.NumStock = book.NumStock;
+            newbook.NumPages = book.NumPages;
+            newbook.Author.Clear();
+            
+            if (authFullName != null)
+            {
+                foreach (var newAuth in db.Authors.Where(i => authFullName.Contains(i.FullName)))
+               {
+                    newbook.Author.Add(newAuth);
+               }
+            }
+            db.Entry(newbook).State = System.Data.Entity.EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("Index");
+        }
 
     }
 }
